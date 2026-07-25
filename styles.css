@@ -843,15 +843,6 @@ section[id] {
   transition: filter 300ms var(--ease), transform 520ms var(--ease);
 }
 
-.person--coming-soon {
-  border-color: rgba(183, 137, 79, 0.35);
-  background: linear-gradient(180deg, #fffaf1 0%, var(--white) 100%);
-}
-
-.person--coming-soon img {
-  object-position: center 60%;
-}
-
 .person h3 {
   margin: 16px 16px 4px;
 }
