@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bjornsondesigns.ca/sitemap.xml
+Sitemap: https://bjornsondesigns.ca/image-sitemap.xml

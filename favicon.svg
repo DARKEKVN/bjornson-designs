@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Bjornson Designs</title>
+  <rect width="128" height="128" rx="22" fill="#243f37"/>
+  <circle cx="64" cy="64" r="48" fill="#b7894f"/>
+  <circle cx="64" cy="64" r="41" fill="#243f37"/>
+  <path d="M33 30h20c15 0 24 7 24 18 0 7-4 13-11 16 9 3 15 10 15 20 0 13-10 22-27 22H33V30Zm18 30c8 0 12-3 12-10 0-6-4-9-12-9h-5v19h5Zm2 35c9 0 14-4 14-12s-5-12-15-12h-6v24h7Z" fill="#f7f7f2"/>
+  <path d="M83 30h10c22 0 36 15 36 38s-14 38-36 38H83V94h9c15 0 24-10 24-26s-9-26-24-26h-9V30Z" fill="#f7f7f2" transform="translate(-9)"/>
+</svg>
