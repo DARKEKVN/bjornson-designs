@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $recipient = 'rene@bjornsondesigns.com';
-$fromAddress = $recipient;
+$fromAddress = 'no-reply@bjornsondesigns.ca';
 $siteName = 'Bjornson Designs';
 
 function wants_json(): bool
