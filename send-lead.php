@@ -5,6 +5,145 @@ $recipient = 'rene@bjornsondesigns.com';
 $fromAddress = 'no-reply@bjornsondesigns.ca';
 $siteName = 'Bjornson Designs';
 
+function load_smtp_config(string $defaultFromAddress): ?array
+{
+    $config = [];
+    $configPath = __DIR__ . '/../bjornson-mail-config.php';
+
+    if (is_readable($configPath)) {
+        $loadedConfig = require $configPath;
+        if (is_array($loadedConfig)) {
+            $config = $loadedConfig;
+        }
+    }
+
+    $envMap = [
+        'host' => 'BJORNSON_SMTP_HOST',
+        'port' => 'BJORNSON_SMTP_PORT',
+        'username' => 'BJORNSON_SMTP_USERNAME',
+        'password' => 'BJORNSON_SMTP_PASSWORD',
+        'secure' => 'BJORNSON_SMTP_SECURE',
+        'from_address' => 'BJORNSON_SMTP_FROM',
+        'from_name' => 'BJORNSON_SMTP_FROM_NAME',
+    ];
+
+    foreach ($envMap as $key => $envKey) {
+        $value = getenv($envKey);
+        if ($value !== false && $value !== '') {
+            $config[$key] = $value;
+        }
+    }
+
+    if (empty($config['host']) || empty($config['username']) || empty($config['password'])) {
+        return null;
+    }
+
+    $secure = strtolower((string)($config['secure'] ?? 'ssl'));
+    $port = isset($config['port']) ? (int)$config['port'] : ($secure === 'tls' ? 587 : 465);
+
+    return [
+        'host' => (string)$config['host'],
+        'port' => $port,
+        'username' => (string)$config['username'],
+        'password' => (string)$config['password'],
+        'secure' => in_array($secure, ['ssl', 'tls', 'none'], true) ? $secure : 'ssl',
+        'from_address' => filter_var($config['from_address'] ?? $defaultFromAddress, FILTER_VALIDATE_EMAIL) ?: $defaultFromAddress,
+        'from_name' => (string)($config['from_name'] ?? 'Bjornson Designs Website'),
+    ];
+}
+
+function smtp_read_response($socket): array
+{
+    $response = '';
+
+    while (($line = fgets($socket, 515)) !== false) {
+        $response .= $line;
+        if (strlen($line) >= 4 && $line[3] === ' ') {
+            break;
+        }
+    }
+
+    return [(int)substr($response, 0, 3), $response];
+}
+
+function smtp_expect($socket, array $acceptedCodes): string
+{
+    [$code, $response] = smtp_read_response($socket);
+
+    if (!in_array($code, $acceptedCodes, true)) {
+        throw new RuntimeException('SMTP response ' . $code . ': ' . trim($response));
+    }
+
+    return $response;
+}
+
+function smtp_command($socket, string $command, array $acceptedCodes): string
+{
+    fwrite($socket, $command . "\r\n");
+
+    return smtp_expect($socket, $acceptedCodes);
+}
+
+function normalize_email_body(string $body): string
+{
+    $body = str_replace(["\r\n", "\r"], "\n", $body);
+    $body = preg_replace('/^\./m', '..', $body) ?? $body;
+
+    return str_replace("\n", "\r\n", $body);
+}
+
+function send_smtp_mail(array $config, string $recipient, string $subject, string $body, array $headers): bool
+{
+    $host = $config['host'];
+    $port = (int)$config['port'];
+    $secure = $config['secure'];
+    $transportHost = $secure === 'ssl' ? 'ssl://' . $host : $host;
+    $socket = @stream_socket_client($transportHost . ':' . $port, $errorNumber, $errorMessage, 20, STREAM_CLIENT_CONNECT);
+
+    if (!$socket) {
+        throw new RuntimeException('SMTP connection failed: ' . $errorNumber . ' ' . $errorMessage);
+    }
+
+    stream_set_timeout($socket, 20);
+    $serverName = clean_single_line($_SERVER['SERVER_NAME'] ?? 'bjornsondesigns.ca', 120);
+
+    try {
+        smtp_expect($socket, [220]);
+        smtp_command($socket, 'EHLO ' . $serverName, [250]);
+
+        if ($secure === 'tls') {
+            smtp_command($socket, 'STARTTLS', [220]);
+            if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+                throw new RuntimeException('SMTP STARTTLS negotiation failed.');
+            }
+            smtp_command($socket, 'EHLO ' . $serverName, [250]);
+        }
+
+        smtp_command($socket, 'AUTH LOGIN', [334]);
+        smtp_command($socket, base64_encode($config['username']), [334]);
+        smtp_command($socket, base64_encode($config['password']), [235]);
+        smtp_command($socket, 'MAIL FROM:<' . $config['from_address'] . '>', [250]);
+        smtp_command($socket, 'RCPT TO:<' . $recipient . '>', [250, 251]);
+        smtp_command($socket, 'DATA', [354]);
+
+        $messageHeaders = array_merge([
+            'Date: ' . date(DATE_RFC2822),
+            'To: Rene <' . $recipient . '>',
+            'Subject: ' . $subject,
+        ], $headers, [
+            'Message-ID: <' . bin2hex(random_bytes(12)) . '@bjornsondesigns.ca>'
+        ]);
+
+        fwrite($socket, implode("\r\n", $messageHeaders) . "\r\n\r\n" . normalize_email_body($body) . "\r\n.\r\n");
+        smtp_expect($socket, [250]);
+        smtp_command($socket, 'QUIT', [221, 250]);
+    } finally {
+        fclose($socket);
+    }
+
+    return true;
+}
+
 function wants_json(): bool
 {
     $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
@@ -110,6 +249,11 @@ $userAgent = clean_single_line($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown', 220);
 $referer = clean_single_line($_SERVER['HTTP_REFERER'] ?? 'Direct visit', 260);
 $safeProject = clean_single_line($project, 80);
 $subject = 'Bjornson Designs website callback request - ' . $safeProject;
+$smtpConfig = load_smtp_config($fromAddress);
+
+if ($smtpConfig !== null) {
+    $fromAddress = $smtpConfig['from_address'];
+}
 
 $body = implode("\n", [
     'New website callback request for Bjornson Designs',
@@ -150,7 +294,14 @@ if ($testMode) {
 } else {
     $headerText = implode("\r\n", $headers);
 
-    if (function_exists('mb_send_mail')) {
+    if ($smtpConfig !== null) {
+        try {
+            $sent = send_smtp_mail($smtpConfig, $recipient, $subject, $body, $headers);
+        } catch (Throwable $error) {
+            error_log('Bjornson SMTP send failed: ' . $error->getMessage());
+            $sent = false;
+        }
+    } elseif (function_exists('mb_send_mail')) {
         if (function_exists('mb_language')) {
             mb_language('uni');
         }

@@ -13,6 +13,7 @@ This is a static premium redesign concept for Bjornson Designs.
 - `styles.css` - responsive visual system and layout
 - `app.js` - mobile navigation, portfolio filtering, lightbox, and contact form submission
 - `send-lead.php` - PHP mail handler that sends callback requests to rene@bjornsondesigns.com
+- `bjornson-mail-config.example.php` - SMTP config template for the production no-reply@bjornsondesigns.ca sender
 - `assets/img/source/` - downloaded source imagery from https://bjornsondesigns.ca/
 - `assets/img/generated/` - generated premium hero imagery for the redesign
 - `assets/data/source-assets.json` - manifest of scraped source assets and their original URLs
@@ -27,4 +28,4 @@ Photorealistic high-end cabinetry design studio with material samples, cabinet d
 
 ## Notes
 
-The callback forms submit to `send-lead.php`, which emails rene@bjornsondesigns.com through the hosting server's PHP mail transport using a Bjornson sender address. No SMTP password is stored in this repository.
+The callback forms submit to `send-lead.php`, which emails rene@bjornsondesigns.com. In production, add `/home/.../bjornson-mail-config.php` one directory above `public_html` using the example file shape so the form sends through authenticated SMTP as no-reply@bjornsondesigns.ca. If no SMTP config is present, the handler falls back to the hosting server's PHP mail transport. No SMTP password is stored in this repository.
