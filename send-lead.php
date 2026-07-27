@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $recipient = 'rene@bjornsondesigns.com';
-$fromAddress = 'website@bjornsondesigns.com';
+$fromAddress = $recipient;
 $siteName = 'Bjornson Designs';
 
 function wants_json(): bool
@@ -148,10 +148,12 @@ if ($testMode) {
         'body' => $body
     ], JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND | LOCK_EX) !== false;
 } else {
-    $extraParameters = stripos(PHP_OS, 'WIN') === 0 ? '' : '-f' . $fromAddress;
-    $sent = $extraParameters !== ''
-        ? @mail($recipient, $subject, $body, implode("\r\n", $headers), $extraParameters)
-        : @mail($recipient, $subject, $body, implode("\r\n", $headers));
+    $headerText = implode("\r\n", $headers);
+    $sent = @mail($recipient, $subject, $body, $headerText);
+
+    if (!$sent && stripos(PHP_OS, 'WIN') !== 0) {
+        $sent = @mail($recipient, $subject, $body, $headerText, '-f' . $fromAddress);
+    }
 }
 
 if (!$sent) {

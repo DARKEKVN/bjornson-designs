@@ -27,4 +27,4 @@ Photorealistic high-end cabinetry design studio with material samples, cabinet d
 
 ## Notes
 
-The callback forms submit to `send-lead.php`, which emails rene@bjornsondesigns.com through the hosting server's PHP mail transport. No SMTP password is stored in this repository.
+The callback forms submit to `send-lead.php`, which emails rene@bjornsondesigns.com through the hosting server's PHP mail transport using a Bjornson sender address. No SMTP password is stored in this repository.
