@@ -149,7 +149,22 @@ if ($testMode) {
     ], JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND | LOCK_EX) !== false;
 } else {
     $headerText = implode("\r\n", $headers);
-    $sent = @mail($recipient, $subject, $body, $headerText);
+
+    if (function_exists('mb_send_mail')) {
+        if (function_exists('mb_language')) {
+            mb_language('uni');
+        }
+        if (function_exists('mb_internal_encoding')) {
+            mb_internal_encoding('UTF-8');
+        }
+        $sent = @mb_send_mail($recipient, $subject, $body, $headerText);
+    } else {
+        $sent = false;
+    }
+
+    if (!$sent) {
+        $sent = @mail($recipient, $subject, $body, $headerText);
+    }
 
     if (!$sent && stripos(PHP_OS, 'WIN') !== 0) {
         $sent = @mail($recipient, $subject, $body, $headerText, '-f' . $fromAddress);
