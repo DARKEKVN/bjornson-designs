@@ -420,13 +420,13 @@ leadForms.forEach((leadForm) => {
       const result = isJson ? await response.json() : {};
 
       if (!response.ok || result.ok === false) {
-        throw new Error(result.message || "We could not send the request. Please call Bjornson Designs directly.");
+        throw new Error(result.message || "We could not send the request. Please email rene@bjornsondesigns.com directly.");
       }
 
       leadForm.reset();
       setFormStatus(result.message || "Thank you. A member of the Bjornson team will follow up shortly.", "is-success");
     } catch (error) {
-      setFormStatus(error.message || "We could not send the request. Please call Bjornson Designs directly.", "is-error");
+      setFormStatus(error.message || "We could not send the request. Please email rene@bjornsondesigns.com directly.", "is-error");
     } finally {
       if (submitButton) {
         submitButton.disabled = false;

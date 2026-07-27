@@ -325,7 +325,7 @@ if ($testMode) {
 if (!$sent) {
     respond(500, [
         'ok' => false,
-        'message' => 'We could not send the request. Please call Bjornson Designs directly.'
+        'message' => 'We could not send the request. Please email rene@bjornsondesigns.com directly.'
     ]);
 }
 
