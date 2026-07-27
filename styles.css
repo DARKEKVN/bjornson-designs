@@ -361,6 +361,16 @@ h3 {
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
 }
 
+.button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+.button:disabled::before {
+  opacity: 0;
+}
+
 .hero-proof {
   position: relative;
   z-index: 1;
@@ -1004,6 +1014,14 @@ section[id] {
   grid-column: 1 / -1;
 }
 
+.lead-form .form-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .lead-form input,
 .lead-form select,
 .lead-form textarea {
@@ -1030,6 +1048,10 @@ section[id] {
   margin: 0;
   color: var(--forest);
   font-weight: 500;
+}
+
+.form-status.is-error {
+  color: var(--clay);
 }
 
 .seo-section {

@@ -112,8 +112,7 @@ const lightboxPosition = document.querySelector("[data-lightbox-position]");
 const closeLightboxButton = document.querySelector("[data-lightbox-close]");
 const lightboxPrevButton = document.querySelector("[data-lightbox-prev]");
 const lightboxNextButton = document.querySelector("[data-lightbox-next]");
-const leadForm = document.querySelector("[data-lead-form]");
-const formStatus = document.querySelector("[data-form-status]");
+const leadForms = document.querySelectorAll("[data-lead-form]");
 const galleryBatchSize = 12;
 let activeFilter = gallery?.dataset.galleryDefault || "all";
 let visibleGalleryCount = galleryBatchSize;
@@ -383,10 +382,58 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-leadForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  formStatus.textContent = "Thank you. A member of the Bjornson team will follow up shortly.";
-  leadForm.reset();
+leadForms.forEach((leadForm) => {
+  const formStatus = leadForm.querySelector("[data-form-status]");
+  const submitButton = leadForm.querySelector('button[type="submit"]');
+  const submitText = submitButton?.textContent || "Send request";
+  const setFormStatus = (message, state) => {
+    if (!formStatus) return;
+    formStatus.classList.remove("is-error", "is-success");
+    if (state) formStatus.classList.add(state);
+    formStatus.textContent = message;
+  };
+
+  leadForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!leadForm.checkValidity()) {
+      leadForm.reportValidity();
+      return;
+    }
+
+    setFormStatus("Sending your request...");
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Sending...";
+    }
+
+    try {
+      const response = await fetch(leadForm.action, {
+        method: "POST",
+        body: new FormData(leadForm),
+        headers: {
+          Accept: "application/json"
+        }
+      });
+      const isJson = response.headers.get("content-type")?.includes("application/json");
+      const result = isJson ? await response.json() : {};
+
+      if (!response.ok || result.ok === false) {
+        throw new Error(result.message || "We could not send the request. Please call Bjornson Designs directly.");
+      }
+
+      leadForm.reset();
+      setFormStatus(result.message || "Thank you. A member of the Bjornson team will follow up shortly.", "is-success");
+    } catch (error) {
+      setFormStatus(error.message || "We could not send the request. Please call Bjornson Designs directly.", "is-error");
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = submitText;
+      }
+    }
+  });
 });
 
 window.addEventListener("scroll", syncHeader, { passive: true });
