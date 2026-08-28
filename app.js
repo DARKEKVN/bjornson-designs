@@ -66,6 +66,10 @@ const galleryFiles = {
     "assets/img/source/088-bathrooms-crafted-edge-bjornson-designs-bathroom-vanity-20-03-ensuite-2.png"
   ],
   showroom: [
+    "assets/img/source/114-showroom-showroom-17.jpg",
+    "assets/img/source/115-showroom-showroom-15.jpg",
+    "assets/img/source/116-showroom-showroom-10.jpg",
+    "assets/img/source/117-showroom-showroom-12.jpg",
     "assets/img/source/090-showroom-img-6342.jpg",
     "assets/img/source/091-showroom-img-7212.jpg",
     "assets/img/source/092-showroom-img-7211.jpg",
@@ -87,6 +91,13 @@ const labels = {
   kitchens: "Kitchen",
   bathrooms: "Bathroom",
   showroom: "Showroom"
+};
+
+const galleryTitles = {
+  "assets/img/source/114-showroom-showroom-17.jpg": "Branded showroom feature wall",
+  "assets/img/source/115-showroom-showroom-15.jpg": "Finish library and consultation table",
+  "assets/img/source/116-showroom-showroom-10.jpg": "Custom double vanity display",
+  "assets/img/source/117-showroom-showroom-12.jpg": "Mudroom storage and bench display"
 };
 
 const galleryItems = Object.entries(galleryFiles).flatMap(([category, files]) =>
@@ -120,6 +131,10 @@ let currentGalleryItems = [];
 let currentLightboxIndex = 0;
 
 function makeTitle(file, category, index) {
+  if (galleryTitles[file]) {
+    return galleryTitles[file];
+  }
+
   if (category === "kitchens") {
     return `Custom Kitchen Project ${String(index).padStart(2, "0")}`;
   }
