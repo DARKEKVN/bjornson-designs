@@ -120,6 +120,10 @@ let currentGalleryItems = [];
 let currentLightboxIndex = 0;
 
 function makeTitle(file, category, index) {
+  if (category === "kitchens") {
+    return `Custom Kitchen Project ${String(index).padStart(2, "0")}`;
+  }
+
   const base = file
     .split("/")
     .pop()

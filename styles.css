@@ -849,6 +849,7 @@ section[id] {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  object-position: center 24%;
   background: var(--stone);
   transition: filter 300ms var(--ease), transform 520ms var(--ease);
 }
