@@ -118,8 +118,6 @@ const filterButtons = document.querySelectorAll("[data-filter]");
 const filterCountBadges = document.querySelectorAll("[data-filter-count]");
 const lightbox = document.querySelector("[data-lightbox]");
 const lightboxImage = document.querySelector("[data-lightbox-image]");
-const lightboxCaption = document.querySelector("[data-lightbox-caption]");
-const lightboxPosition = document.querySelector("[data-lightbox-position]");
 const closeLightboxButton = document.querySelector("[data-lightbox-close]");
 const lightboxPrevButton = document.querySelector("[data-lightbox-prev]");
 const lightboxNextButton = document.querySelector("[data-lightbox-next]");
@@ -178,12 +176,10 @@ function renderGallery(filter = "all") {
       button.type = "button";
       button.dataset.category = item.category;
       button.dataset.src = item.file;
-      button.dataset.caption = `${labels[item.category]}: ${item.title}`;
       button.dataset.index = String(index);
+      button.setAttribute("aria-label", `View ${item.title}`);
       button.innerHTML = `
         <img src="${item.file}" alt="${item.title}" loading="lazy">
-        <span>${labels[item.category]}</span>
-        <strong>${item.title}</strong>
       `;
       return button;
     })
@@ -226,7 +222,7 @@ function syncFilterCounts() {
 }
 
 function openLightbox(index) {
-  if (!lightbox || !lightboxImage || !lightboxCaption || !closeLightboxButton) return;
+  if (!lightbox || !lightboxImage || !closeLightboxButton) return;
 
   currentLightboxIndex = index;
   const item = currentGalleryItems[currentLightboxIndex];
@@ -235,11 +231,6 @@ function openLightbox(index) {
   const caption = `${labels[item.category]}: ${item.title}`;
   lightboxImage.src = item.file;
   lightboxImage.alt = caption;
-  lightboxCaption.textContent = caption;
-
-  if (lightboxPosition) {
-    lightboxPosition.textContent = `${currentLightboxIndex + 1} of ${currentGalleryItems.length}`;
-  }
 
   lightbox.classList.add("is-open");
   lightbox.setAttribute("aria-hidden", "false");

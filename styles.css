@@ -616,16 +616,6 @@ section[id] {
   transition: filter 260ms var(--ease), transform 520ms var(--ease);
 }
 
-.gallery-item::after {
-  position: absolute;
-  inset: auto 0 0;
-  height: 42%;
-  background: linear-gradient(0deg, rgba(16, 19, 18, 0.82), rgba(16, 19, 18, 0));
-  content: "";
-  pointer-events: none;
-  transition: height 240ms var(--ease), background 240ms var(--ease);
-}
-
 .gallery-item::before {
   position: absolute;
   inset: 0;
@@ -635,37 +625,6 @@ section[id] {
   opacity: 0;
   pointer-events: none;
   transition: opacity 220ms var(--ease);
-}
-
-.gallery-item span,
-.gallery-item strong {
-  position: absolute;
-  z-index: 1;
-}
-
-.gallery-item span {
-  left: 12px;
-  top: 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.88);
-  color: var(--ink);
-  padding: 6px 10px;
-  font-size: 12px;
-  font-weight: 800;
-  transition: background 220ms var(--ease), color 220ms var(--ease), transform 220ms var(--ease);
-}
-
-.gallery-item strong {
-  right: 14px;
-  bottom: 14px;
-  left: 14px;
-  color: var(--white);
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.25;
-  text-align: left;
-  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.22);
-  transition: transform 240ms var(--ease), text-shadow 240ms var(--ease);
 }
 
 .gallery-item:hover img,
@@ -683,32 +642,10 @@ section[id] {
   transform: translateY(-6px);
 }
 
-.gallery-item:hover::after,
-.gallery-item:focus-visible::after,
-.gallery-item.is-pointer-active::after {
-  height: 52%;
-  background: linear-gradient(0deg, rgba(16, 19, 18, 0.92), rgba(16, 19, 18, 0));
-}
-
 .gallery-item:hover::before,
 .gallery-item:focus-visible::before,
 .gallery-item.is-pointer-active::before {
   opacity: 1;
-}
-
-.gallery-item:hover span,
-.gallery-item:focus-visible span,
-.gallery-item.is-pointer-active span {
-  background: var(--brass);
-  color: var(--ink);
-  transform: translateY(-2px);
-}
-
-.gallery-item:hover strong,
-.gallery-item:focus-visible strong,
-.gallery-item.is-pointer-active strong {
-  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.42);
-  transform: translateY(-4px);
 }
 
 .gallery-actions {
@@ -1423,22 +1360,6 @@ section[id] {
 
 .lightbox-next {
   right: 14px;
-}
-
-.lightbox-caption-row {
-  justify-self: center;
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  text-align: center;
-}
-
-.lightbox-caption-row p,
-.lightbox-caption-row span {
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.74);
 }
 
 .site-nav .nav-cta.is-pointer-active {
