@@ -70,6 +70,11 @@ const galleryFiles = {
     "assets/img/source/115-showroom-showroom-15.jpg",
     "assets/img/source/116-showroom-showroom-10.jpg",
     "assets/img/source/117-showroom-showroom-12.jpg",
+    "assets/img/source/118-showroom-showroom-3.jpg",
+    "assets/img/source/119-showroom-showroom-7.jpg",
+    "assets/img/source/120-showroom-showroom-24.jpg",
+    "assets/img/source/121-showroom-showroom-26.jpg",
+    "assets/img/source/122-showroom-showroom-28.jpg",
     "assets/img/source/090-showroom-img-6342.jpg",
     "assets/img/source/091-showroom-img-7212.jpg",
     "assets/img/source/092-showroom-img-7211.jpg",
@@ -97,7 +102,12 @@ const galleryTitles = {
   "assets/img/source/114-showroom-showroom-17.jpg": "Branded showroom feature wall",
   "assets/img/source/115-showroom-showroom-15.jpg": "Finish library and consultation table",
   "assets/img/source/116-showroom-showroom-10.jpg": "Custom double vanity display",
-  "assets/img/source/117-showroom-showroom-12.jpg": "Mudroom storage and bench display"
+  "assets/img/source/117-showroom-showroom-12.jpg": "Mudroom storage and bench display",
+  "assets/img/source/118-showroom-showroom-3.jpg": "Dark wood kitchen and bar display",
+  "assets/img/source/119-showroom-showroom-7.jpg": "Feature wall and custom display storage",
+  "assets/img/source/120-showroom-showroom-24.jpg": "Modern showroom kitchen display",
+  "assets/img/source/121-showroom-showroom-26.jpg": "Showroom kitchen with brass details",
+  "assets/img/source/122-showroom-showroom-28.jpg": "Showroom kitchen and dining display"
 };
 
 const galleryItems = Object.entries(galleryFiles).flatMap(([category, files]) =>
